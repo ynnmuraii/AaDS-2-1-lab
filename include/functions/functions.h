@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-namespace Set {
+namespace SelfWrittenSet {
 	template <typename T>
 	struct Node
 	{
@@ -36,3 +36,99 @@ namespace Set {
 			clear(head->_right);
 			delete head;
 		}
+
+		bool erase_with_root(Node<T>*& root, const int& val) {
+			if (!root) {
+				return false;
+			}
+
+			if (root->_val > val) {
+				return erase_with_root(root->_left, val);
+			}
+			else if (root->_val < val) {
+				return erase_with_root(root->_right, val);
+			}
+
+			if (!root->_left || !root->_right) {
+				Node<T>* temp = root->_left ? root->_left : root->_right;
+				delete root;
+				root = temp;
+				return true;
+			}
+
+			Node<T>* succParent = root;
+			Node<T>* succ = root->_right;
+			while (succ->_left != nullptr) {
+				succParent = succ;
+				succ = succ->_left;
+			}
+
+			root->_val = succ->_val;
+
+			return erase_with_root(succParent->_left == succParent ? root->_right : succParent->_left, succ->_val);
+		}
+
+		void recursion(Node<T>* root) {
+			if (!root) {
+				return;
+			}
+			recursion(root->_left);
+			std::cout << root->_val << ' ';
+			recursion(root->_right);
+		}
+
+	public:
+
+		Set() : _root(nullptr) {}
+		Set(std::vector<T> data) : _root(nullptr) {
+			for (const auto& el : data) {
+				insert(el);
+			}
+		}
+		Set(const Set& other) {
+			_root = copy_tree(other._root);
+		}
+		~Set() {
+			clear(_root);
+		}
+
+		Node<T>* get_root() const {
+			return _root;
+		}
+
+		void print() {
+			if (_root) {
+				recursion(_root);
+			}
+			std::cout << std::endl;
+		}
+
+		bool insert(const int& val) {
+			Node<T>* new_node = new Node<T>(val);
+			if (!_root) {
+				_root = new_node;
+				return true;
+			}
+			Node<T>* cur = _root;
+			Node<T>** ptr = &_root; 
+
+			while (cur) {
+				if (val < cur->_val || val == cur->_val) { 
+					ptr = &(cur->_left);
+				}
+				else { 
+					ptr = &(cur->_right);
+				}
+				if (val == cur->_val) {
+					delete new_node; 
+					return false;
+				}
+				cur = *ptr; 
+			}
+			*ptr = new_node; 
+			return true;
+		}
+
+
+	};
+}
