@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <random>
 
 namespace SelfWrittenSet {
 	template <typename T>
@@ -131,4 +132,23 @@ namespace SelfWrittenSet {
 
 
 	};
+
+
+	int random(int a, int b, size_t i) {
+		std::mt19937 gen(i);
+		std::uniform_int_distribution<> distribution(a, b);
+		return distribution(gen);
+	}
+
+	std::vector<int> random(int a, int b, size_t n, size_t i) {
+		std::vector<int> res;
+		std::mt19937 gen(i);
+		std::uniform_int_distribution<> distribution(a, b);
+		for (size_t j = 0; j < n; j++) {
+			size_t x = distribution(gen);
+			res.push_back(x);
+		}
+		return res;
+	}
+
 }
