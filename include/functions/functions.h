@@ -104,6 +104,10 @@ namespace SelfWrittenSet {
 			std::cout << std::endl;
 		}
 
+		bool erase(const int& val) {
+			return erase_with_root(_root, val);
+		}
+
 		bool insert(const int& val) {
 			Node<T>* new_node = new Node<T>(val);
 			if (!_root) {
@@ -130,9 +134,28 @@ namespace SelfWrittenSet {
 			return true;
 		}
 
+		bool contains(const int& val) const {
+			Node<T>* cur = _root;
+			while (cur) {
+				if (cur->_val == val) {
+					return true;
+				}
+				else if (cur->_val < val) {
+					cur = cur->_right;
+				}
+				else {
+					cur = cur->_left;
+				}
+			}
+			return false;
+		}
+
+		Set& operator= (Set oth) {
+			std::swap(_root, oth._root);
+			return *this;
+		}
 
 	};
-
 
 	int random(int a, int b, size_t i) {
 		std::mt19937 gen(i);
