@@ -427,7 +427,15 @@ int main() {
 
 	///*Average time, 1000 nums: 0.000246729 seconds*/
 
-	//---------------------------------------------------------------------------------------------
+	std::vector<int> vec = { 3, 2, 2, 4 };
+
+	std::vector<int> result = findUnique(vec);
+
+	std::cout << "”никальные элементы из исходного вектора:" << std::endl;
+	for (int num : result) {
+		std::cout << num << " ";
+	}
+	std::cout << std::endl;
 
 	return 0;
 }

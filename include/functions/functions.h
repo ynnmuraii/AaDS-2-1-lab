@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <random>
+#include <vector>
 
 namespace SelfWrittenSet {
 	template <typename T>
@@ -59,15 +60,24 @@ namespace SelfWrittenSet {
 
 			Node<T>* succParent = root;
 			Node<T>* succ = root->_right;
-			while (succ->_left != nullptr) {
+			while (succ->_left) {
 				succParent = succ;
 				succ = succ->_left;
 			}
 
 			root->_val = succ->_val;
 
-			return erase_with_root(succParent->_left == succParent ? root->_right : succParent->_left, succ->_val);
+			if (succParent == root) {
+				root->_right = succ->_right;
+			}
+			else {
+				succParent->_left = succ->_right;
+			}
+			delete succ;
+
+			return true;
 		}
+
 
 		void recursion(Node<T>* root) {
 			if (!root) {
@@ -105,7 +115,11 @@ namespace SelfWrittenSet {
 		}
 
 		bool erase(const int& val) {
-			return erase_with_root(_root, val);
+			bool erased = false;
+			while (erase_with_root(_root, val)) {
+				erased = true;
+			}
+			return erased;
 		}
 
 		bool insert(const int& val) {
@@ -155,7 +169,26 @@ namespace SelfWrittenSet {
 			return *this;
 		}
 
+
 	};
+
+	template <typename T>
+	std::vector<T> findUnique(const std::vector<T>& vec) {
+		SelfWrittenSet::Set<T> tempSet;
+		std::vector<T> uniqueElements;
+
+		for (const T& elem : vec) {
+			if (!tempSet.contains(elem)) {
+				uniqueElements.push_back(elem);
+				tempSet.insert(elem);
+			}
+			else {
+				uniqueElements.erase(std::remove(uniqueElements.begin(), uniqueElements.end(), elem), uniqueElements.end());
+			}
+		}
+
+		return uniqueElements;
+	}
 
 	int random(int a, int b, size_t i) {
 		std::mt19937 gen(i);
